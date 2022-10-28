@@ -4,6 +4,7 @@ from typing import List
 import torch
 from diffusers import StableDiffusionInpaintPipeline
 from PIL import Image
+import PIL.ImageOps
 from cog import BasePredictor, Input, Path
 
 
@@ -34,6 +35,10 @@ class Predictor(BasePredictor):
         mask: Path = Input(
             description="Black and white image to use as mask. White pixels are inpainted and black pixels are preserved.",
         ),
+        invert_mask: bool = Input(
+            description="If this is true, then black pixels are inpainted and white pixels are preserved.",
+            default=False,
+        ),
         num_outputs: int = Input(
             description="Number of images to output. NSFW filter in enabled, so you may get fewer outputs than requested if flagged",
             ge=1,
@@ -57,6 +62,9 @@ class Predictor(BasePredictor):
 
         image = Image.open(image).convert("RGB")
         mask = Image.open(mask).convert("RGB")
+
+        if invert_mask:
+            mask = PIL.ImageOps.invert(mask)
 
         if image.width % 8 != 0 or image.height % 8 != 0:
             if mask.size == image.size:
