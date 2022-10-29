@@ -39,8 +39,12 @@ class Predictor(BasePredictor):
             description="If this is true, then black pixels are inpainted and white pixels are preserved.",
             default=False,
         ),
+        ignore_nsfw: bool = Input(
+            description="If this is true, NSFW results will not be filtered",
+            default=False
+        ),
         num_outputs: int = Input(
-            description="Number of images to output. NSFW filter in enabled, so you may get fewer outputs than requested if flagged",
+            description="Number of images to output. If ignore_nsfw is off, you may get fewer outputs than requested if they are flagged",
             ge=1,
             le=4,
             default=1,
@@ -54,6 +58,7 @@ class Predictor(BasePredictor):
         seed: int = Input(
             description="Random seed. Leave blank to randomize the seed", default=None
         ),
+        
     ) -> List[Path]:
         """Run a single prediction on the model"""
         if seed is None:
@@ -93,7 +98,7 @@ class Predictor(BasePredictor):
         samples = [
             output.images[i]
             for i, nsfw_flag in enumerate(output.nsfw_content_detected)
-            if not nsfw_flag
+            if ignore_nsfw or not nsfw_flag
         ]
 
         if len(samples) == 0:
