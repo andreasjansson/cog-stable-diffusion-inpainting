@@ -81,6 +81,7 @@ class Predictor(BasePredictor):
         generator = torch.Generator("cuda").manual_seed(seed)
         output = self.pipe(
             prompt=prompt,
+            negative_prompt=negative_prompt,
             image=image,
             num_images_per_prompt=num_outputs,
             mask_image=mask,
