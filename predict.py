@@ -29,6 +29,7 @@ class Predictor(BasePredictor):
     def predict(
         self,
         prompt: str = Input(description="Input prompt", default=""),
+        negative_prompt: str = Input(description="The prompt or prompts not to guide the image generation. Ignored when not using guidance (i.e., ignored if `guidance_scale` is less than `1`).", default=""),
         image: Path = Input(
             description="Input image to in-paint. Width and height should both be divisible by 8. If they're not, the image will be center cropped to the nearest width and height divisible by 8",
         ),
@@ -80,6 +81,7 @@ class Predictor(BasePredictor):
         generator = torch.Generator("cuda").manual_seed(seed)
         output = self.pipe(
             prompt=prompt,
+            negative_prompt=negative_prompt,
             image=image,
             num_images_per_prompt=num_outputs,
             mask_image=mask,
