@@ -1,4 +1,4 @@
-# Stable Diffusion Cog model
+# Stable Diffusion Inpainting Cog model
 
 [![Replicate](https://replicate.com/andreasjansson/stable-diffusion-inpainting/badge)](https://replicate.com/andreasjansson/stable-diffusion-inpainting)
 
@@ -11,3 +11,9 @@ First, download the pre-trained weights [with your Hugging Face auth token](http
 Then, you can run predictions:
 
     cog predict -i prompt="a herd of grazing sheep" -i image=@desktop.png -i mask=@desktop-mask.png
+
+To push a new version you need to be @andreasjansson. If you are, then run
+
+```
+./test_and_push.sh
+```
